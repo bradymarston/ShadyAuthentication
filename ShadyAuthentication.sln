@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28705.295
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShadyAuthentication", "ShadyAuthentication\ShadyAuthentication.csproj", "{33C8BF8E-18BA-49BB-95E4-A239698D6052}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33C8BF8E-18BA-49BB-95E4-A239698D6052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33C8BF8E-18BA-49BB-95E4-A239698D6052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33C8BF8E-18BA-49BB-95E4-A239698D6052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33C8BF8E-18BA-49BB-95E4-A239698D6052}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C298CB9-4E09-4954-8471-84BD914BA989}
+	EndGlobalSection
+EndGlobal
