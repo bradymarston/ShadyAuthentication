@@ -86,9 +86,9 @@ namespace ShadySoft.Authentication
         /// <param name="password">The password to attempt to sign in with.</param>
         /// <param name="isPersistent">Flag indicating whether the sign-in cookie should persist after the browser is closed.</param>
         /// <param name="lockoutOnFailure">Flag indicating if the user account should be locked if the sign in fails.</param>
-        /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
+        /// <returns>The task object representing the asynchronous operation containing an enctrypted token string and the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
-        public virtual async Task<Models.SignInResult> PasswordSignInAsync(TUser user, string password,
+        public virtual async Task<(string TokenString, SignInResult Result)> PasswordSignInAsync(TUser user, string password,
             bool lockoutOnFailure)
         {
             if (user == null)
@@ -99,7 +99,7 @@ namespace ShadySoft.Authentication
             var attempt = await CheckPasswordSignInAsync(user, password, lockoutOnFailure);
             return attempt.Succeeded
                 ? await SignInOrTwoFactorAsync(user)
-                : attempt;
+                : (null, attempt);
         }
 
         /// <summary>
@@ -110,15 +110,15 @@ namespace ShadySoft.Authentication
         /// <param name="password">The password to attempt to sign in with.</param>
         /// <param name="isPersistent">Flag indicating whether the sign-in cookie should persist after the browser is closed.</param>
         /// <param name="lockoutOnFailure">Flag indicating if the user account should be locked if the sign in fails.</param>
-        /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
+        /// <returns>The task object representing the asynchronous operation containing an encrypted token string and the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
-        public virtual async Task<Models.SignInResult> PasswordSignInAsync(string userName, string password,
+        public virtual async Task<(string TokenString, SignInResult Result)> PasswordSignInAsync(string userName, string password,
             bool lockoutOnFailure)
         {
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return Models.SignInResult.Failed;
+                return (null, SignInResult.Failed);
             }
 
             return await PasswordSignInAsync(user, password, lockoutOnFailure);
@@ -131,19 +131,19 @@ namespace ShadySoft.Authentication
         /// <param name="email">The email address of the user to sign in.</param>
         /// <param name="password">The password to attempt to sign in with.</param>
         /// <param name="lockoutOnFailure">Flag indicating if the user account should be locked if the sign in fails.</param>
-        /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
+        /// <returns>The task object representing the asynchronous operation containing an encrypted token string and the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
-        public virtual async Task<Models.SignInResult> EmailPasswordSignInAsync(string email, string password,
+        public virtual async Task<(string TokenString, SignInResult Result)> EmailPasswordSignInAsync(string email, string password,
             bool lockoutOnFailure)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                return Models.SignInResult.Failed;
+                return (null, SignInResult.Failed);
             }
 
             if (!await CheckCredentialConfirmationAsync(user, CredentialType.Email))
-                return Models.SignInResult.ConfirmationRequired;
+                return (null, SignInResult.NotAllowed);
 
             return await PasswordSignInAsync(user, password, lockoutOnFailure);
         }
@@ -157,7 +157,7 @@ namespace ShadySoft.Authentication
         /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
         /// <returns></returns>
-        public virtual async Task<Models.SignInResult> CheckPasswordSignInAsync(TUser user, string password, bool lockoutOnFailure)
+        public virtual async Task<SignInResult> CheckPasswordSignInAsync(TUser user, string password, bool lockoutOnFailure)
         {
             if (user == null)
             {
@@ -178,7 +178,7 @@ namespace ShadySoft.Authentication
                     await ResetLockout(user);
                 }
 
-                return Models.SignInResult.Success;
+                return SignInResult.Success;
             }
             _logger.LogWarning(2, "User {userId} failed to provide the correct password.", await _userManager.GetUserIdAsync(user));
 
@@ -191,7 +191,7 @@ namespace ShadySoft.Authentication
                     return await LockedOutAsync(user);
                 }
             }
-            return Models.SignInResult.Failed;
+            return SignInResult.Failed;
         }
 
         /// <summary>
@@ -221,8 +221,8 @@ namespace ShadySoft.Authentication
         /// <param name="isPersistent">Flag indicating whether the sign-in cookie should persist after the browser is closed.</param>
         /// <param name="loginProvider">The login provider to use. Default is null</param>
         /// <param name="bypassTwoFactor">Flag indicating whether to bypass two factor authentication. Default is false</param>
-        /// <returns>Returns a <see cref="SignInResult"/></returns>
-        protected virtual async Task<Models.SignInResult> SignInOrTwoFactorAsync(TUser user, string loginProvider = null, bool bypassTwoFactor = false)
+        /// <returns>Returns a tuple containing an encrypted token string and a <see cref="SignInResult"/></returns>
+        protected virtual async Task<(string TokenString, SignInResult Result)> SignInOrTwoFactorAsync(TUser user, string loginProvider = null, bool bypassTwoFactor = false)
         {
             if (!bypassTwoFactor && await IsTfaEnabled(user))
             {
@@ -231,7 +231,7 @@ namespace ShadySoft.Authentication
                     // Store the userId for use after two factor check
                 }
             }
-            return new Models.SignInResult(SignIn(user));
+            return (SignIn(user), SignInResult.Success);
         }
 
         /// <summary>
@@ -249,10 +249,10 @@ namespace ShadySoft.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>A locked out SignInResult</returns>
-        protected virtual async Task<Models.SignInResult> LockedOutAsync(TUser user)
+        protected virtual async Task<SignInResult> LockedOutAsync(TUser user)
         {
             _logger.LogWarning(3, "User {userId} is currently locked out.", await _userManager.GetUserIdAsync(user));
-            return Models.SignInResult.LockedOut;
+            return SignInResult.LockedOut;
         }
 
         /// <summary>

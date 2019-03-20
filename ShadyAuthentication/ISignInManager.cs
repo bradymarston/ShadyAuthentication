@@ -9,11 +9,11 @@ namespace ShadySoft.Authentication
         IdentityOptions Options { get; }
 
         Task<bool> CheckCredentialConfirmationAsync(TUser user, CredentialType credentialType);
-        Task<Models.SignInResult> CheckPasswordSignInAsync(TUser user, string password, bool lockoutOnFailure);
+        Task<SignInResult> CheckPasswordSignInAsync(TUser user, string password, bool lockoutOnFailure);
         Task<bool> IsTwoFactorClientRememberedAsync(TUser user);
-        Task<Models.SignInResult> PasswordSignInAsync(string userName, string password, bool lockoutOnFailure);
-        Task<Models.SignInResult> EmailPasswordSignInAsync(string email, string password, bool lockoutOnFailure);
-        Task<Models.SignInResult> PasswordSignInAsync(TUser user, string password, bool lockoutOnFailure);
+        Task<(string TokenString, SignInResult Result)> PasswordSignInAsync(string userName, string password, bool lockoutOnFailure);
+        Task<(string TokenString, SignInResult Result)> EmailPasswordSignInAsync(string email, string password, bool lockoutOnFailure);
+        Task<(string TokenString, SignInResult Result)> PasswordSignInAsync(TUser user, string password, bool lockoutOnFailure);
         string SignIn(TUser user);
         Task SignOutAsync(TUser user);
     }
