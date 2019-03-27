@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,10 +41,15 @@ namespace ShadySoft.Authentication
                 authenticationScheme, configureOptions);
         }
 
-        public static TUser GetAuthenticatedUser<TUser>(this Controller controller)
+        public static TUser GetAuthorizedUser<TUser>(this HttpContext context)
             where TUser : IdentityUser, IUser
         {
-            return (TUser)controller.HttpContext.Items["AuthenticatedUser"];
+            var user = (TUser)context.Items["AuthenticatedUser"];
+
+            if (user == null)
+                throw new Exception("No user authenticated. GetAuthenticatedUser should only be called on actions with an Authorized attribute.");
+
+            return user;
         }
     }
 }
