@@ -71,10 +71,7 @@ namespace ShadySoft.Authentication
         /// <param name="user">The the user to sign-out.</param>
         public virtual async Task SignOutAsync(TUser user)
         {
-            //Get user using this instance of UserManager
-            var userInDb = await _userManager.FindByIdAsync(user.Id);
-
-            userInDb.TokensInvalidBefore = DateTime.UtcNow;
+            user.TokensInvalidBefore = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
         }
 
