@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using ShadySoft.Authentication.OAuth;
 using System;
 
 namespace ShadySoft.Authentication
@@ -33,9 +33,12 @@ namespace ShadySoft.Authentication
         {
             builder.Services.AddSingleton<IPostConfigureOptions<ShadyAuthenticationOptions>, ShadyAuthenticationPostConfigureOptions>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<ISignInManager<TUser>, Authentication.SignInManager<TUser>>();
+            builder.Services.AddScoped<ISignInManager<TUser>, SignInManager<TUser>>();
+            builder.Services.AddScoped<OAuthService>();
 
             builder.Services.AddDataProtection();
+
+            builder.Services.Configure(configureOptions);
 
             return builder.AddScheme<ShadyAuthenticationOptions, ShadyAuthenticationHandler<TUser>>(
                 authenticationScheme, configureOptions);

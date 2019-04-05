@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ShadySoft.Authentication.Models;
+using ShadySoft.Authentication.OAuth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace ShadySoft.Authentication
     public class SignInManager<TUser> : ISignInManager<TUser> where TUser : IdentityUser, IUser
     {
         private readonly UserManager<TUser> _userManager;
+        private readonly OAuthService _oAuthService;
         private readonly ILogger<SignInManager<TUser>> _logger;
         private readonly ITokenService _tokenService;
 
@@ -20,10 +22,12 @@ namespace ShadySoft.Authentication
 
         public SignInManager(UserManager<TUser> userManager,
                                   IOptions<IdentityOptions> optionsAccessor,
+                                  OAuthService oAuthService,
                                   ILogger<SignInManager<TUser>> logger,
                                   ITokenService tokenService)
         {
             _userManager = userManager;
+            _oAuthService = oAuthService;
             _logger = logger;
             _tokenService = tokenService;
             Options = optionsAccessor?.Value ?? new IdentityOptions();
@@ -189,6 +193,11 @@ namespace ShadySoft.Authentication
                 }
             }
             return SignInResult.Failed;
+        }
+
+        public virtual async Task<ExternalLoginInfo> GetExternalLoginInfoAsync(string oneTimeCode, string provider)
+        {
+            return await _oAuthService.GetExternalLoginInfoAsync(oneTimeCode, provider);
         }
 
         /// <summary>
