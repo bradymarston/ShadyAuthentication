@@ -33,7 +33,7 @@ namespace ShadySoft.Authentication
         {
             builder.Services.AddSingleton<IPostConfigureOptions<ShadyAuthenticationOptions>, ShadyAuthenticationPostConfigureOptions>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<ISignInManager<TUser>, SignInManager<TUser>>();
+            builder.Services.AddScoped<SignInManager<TUser>>();
             builder.Services.AddScoped<OAuthService>();
 
             builder.Services.AddDataProtection();
