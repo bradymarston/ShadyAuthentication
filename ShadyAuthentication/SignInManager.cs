@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ShadySoft.Authentication
 {
-    public class SignInManager<TUser> : ISignInManager<TUser> where TUser : IdentityUser, IUser
+    public class SignInManager<TUser> where TUser : IdentityUser, IUser
     {
         private readonly UserManager<TUser> _userManager;
         private readonly OAuthService _oAuthService;
@@ -195,6 +195,31 @@ namespace ShadySoft.Authentication
             return SignInResult.Failed;
         }
 
+        public virtual async Task<(string TokenString, TUser User, SignInResult Result)> ExternalLoginSignInAsync(string loginProvider, string providerKey, bool bypassTwoFactor)
+        {
+            var user = await _userManager.FindByLoginAsync(loginProvider, providerKey);
+            if (user == null)
+            {
+                return (null, null, SignInResult.Failed);
+            }
+
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                return (null, null, await LockedOutAsync(user));
+            }
+
+            var (tokenString, result) = await SignInOrTwoFactorAsync(user, loginProvider, bypassTwoFactor);
+
+            return (tokenString, user, result);
+        }
+
+        /// <summary>
+        /// Gets the external login information for the current login, as an asynchronous operation.
+        /// </summary>
+        /// <param name="oneTimeCode">One time code from the external login provider.</param>
+        /// <param name="provider">Identifier for the external login provider.</param>
+        /// <returns>The task object representing the asynchronous operation containing the <see name="ExternalLoginInfo"/>
+        /// for the sign-in attempt.</returns>
         public virtual async Task<ExternalLoginInfo> GetExternalLoginInfoAsync(string oneTimeCode, string provider)
         {
             return await _oAuthService.GetExternalLoginInfoAsync(oneTimeCode, provider);
