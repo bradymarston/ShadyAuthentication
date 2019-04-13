@@ -7,8 +7,5 @@ namespace ShadySoft.Authentication.OAuth
         string Name { get; }
         string FirstName { get; }
         string LastName { get; }
-        string PictureUrl { get; }
-        string ProfileUrl { get; }
-        string Locale { get; }
     }
 }

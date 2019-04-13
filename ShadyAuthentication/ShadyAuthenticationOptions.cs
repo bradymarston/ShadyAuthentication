@@ -11,5 +11,8 @@ namespace ShadySoft.Authentication
         public string GoogleAppSecret { get; set; }
         public string GoogleAppId { get; set; }
         public string GoogleCallbackUri { get; set; }
+        public string MicrosoftAppSecret { get; set; }
+        public string MicrosoftAppId { get; set; }
+        public string MicrosoftCallbackUri { get; set; }
     }
 }

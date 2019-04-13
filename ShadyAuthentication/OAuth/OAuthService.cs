@@ -29,6 +29,9 @@ namespace ShadySoft.Authentication.OAuth
                 case ExternalLoginProviders.Google:
                     oAuthService = new GoogleHttpService(ShadyOptions);
                     break;
+                case ExternalLoginProviders.Microsoft:
+                    oAuthService = new MicrosoftHttpService(ShadyOptions);
+                    break;
                 default:
                     return null;
             }
