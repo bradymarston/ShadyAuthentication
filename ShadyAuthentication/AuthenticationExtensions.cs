@@ -11,25 +11,25 @@ namespace ShadySoft.Authentication
     public static class AuthenticationExtensions
     {
         public static AuthenticationBuilder AddShady<TUser>(this AuthenticationBuilder builder)
-            where TUser : IdentityUser, IUser
+            where TUser : IdentityUser
         {
             return AddShady<TUser>(builder, ShadyAuthenticationDefaults.AuthenticationScheme, _ => { });
         }
 
         public static AuthenticationBuilder AddShady<TUser>(this AuthenticationBuilder builder, string authenticationScheme)
-            where TUser : IdentityUser, IUser
+            where TUser : IdentityUser
         {
             return AddShady<TUser>(builder, authenticationScheme, _ => { });
         }
 
         public static AuthenticationBuilder AddShady<TUser>(this AuthenticationBuilder builder, Action<ShadyAuthenticationOptions> configureOptions)
-            where TUser : IdentityUser, IUser
+            where TUser : IdentityUser
         {
             return AddShady<TUser>(builder, ShadyAuthenticationDefaults.AuthenticationScheme, configureOptions);
         }
 
         public static AuthenticationBuilder AddShady<TUser>(this AuthenticationBuilder builder, string authenticationScheme, Action<ShadyAuthenticationOptions> configureOptions)
-            where TUser : IdentityUser, IUser
+            where TUser : IdentityUser
         {
             builder.Services.AddSingleton<IPostConfigureOptions<ShadyAuthenticationOptions>, ShadyAuthenticationPostConfigureOptions>();
             builder.Services.AddScoped<ITokenService, TokenService>();
@@ -45,7 +45,7 @@ namespace ShadySoft.Authentication
         }
 
         public static TUser GetAuthorizedUser<TUser>(this HttpContext context)
-            where TUser : IdentityUser, IUser
+            where TUser : IdentityUser
         {
             var user = (TUser)context.Items["AuthenticatedUser"];
 

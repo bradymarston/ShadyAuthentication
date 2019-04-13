@@ -6,5 +6,6 @@ namespace ShadySoft.Authentication.Models
     {
         public string UserId { get; set; }
         public DateTime Issued { get; set; }
+        public string SecurityStamp { get; set; }
     }
 }

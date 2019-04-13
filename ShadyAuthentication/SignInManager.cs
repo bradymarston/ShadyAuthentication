@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ShadySoft.Authentication
 {
-    public class SignInManager<TUser> where TUser : IdentityUser, IUser
+    public class SignInManager<TUser> where TUser : IdentityUser
     {
         private readonly UserManager<TUser> _userManager;
         private readonly OAuthService _oAuthService;
@@ -66,7 +66,7 @@ namespace ShadySoft.Authentication
         /// <returns>Valid authentication token.</returns>
         public virtual string SignIn(TUser user)
         {
-            return _tokenService.GenerateTokenString(user.Id);
+            return _tokenService.GenerateTokenString(user);
         }
 
         /// <summary>
@@ -75,8 +75,7 @@ namespace ShadySoft.Authentication
         /// <param name="user">The the user to sign-out.</param>
         public virtual async Task SignOutAsync(TUser user)
         {
-            user.TokensInvalidBefore = DateTime.UtcNow;
-            await _userManager.UpdateAsync(user);
+            await _userManager.UpdateSecurityStampAsync(user);
         }
 
         /// <summary>

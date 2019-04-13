@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace ShadySoft.Authentication
 {
     public class ShadyAuthenticationHandler<TUser> : AuthenticationHandler<ShadyAuthenticationOptions>
-        where TUser : IdentityUser, IUser
+        where TUser : IdentityUser
     {
         private readonly ITokenService _tokenService;
         private readonly UserManager<TUser> _userManager;
@@ -49,7 +49,7 @@ namespace ShadySoft.Authentication
             if (user is null)
                 return AuthenticateResult.Fail("User in authentication header cannot be found");
 
-            if (token.Issued < user.TokensInvalidBefore)
+            if (token.SecurityStamp != user.SecurityStamp)
                 return AuthenticateResult.Fail("Token is no longer valid");
 
             var ticket = await BuildTicketAsync(user);
