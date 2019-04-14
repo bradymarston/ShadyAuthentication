@@ -27,7 +27,7 @@ namespace ShadySoft.Authentication.OAuth
                 var bodyString = $"client_id={_shadyOptions.MicrosoftAppId}";
                 bodyString += $"&scope=https%3A%2F%2Fgraph.microsoft.com%2Fuser.read";
                 bodyString += $"&code={oneTimeCode}";
-                bodyString += $"&redirect_uri={HttpUtility.UrlEncode(_shadyOptions.MicrosoftCallbackUri)}";
+                bodyString += $"&redirect_uri={HttpUtility.UrlEncode(_shadyOptions.ExternalLoginCallbackUri)}";
                 bodyString += "&grant_type=authorization_code";
                 bodyString += $"&client_secret={HttpUtility.UrlEncode(_shadyOptions.MicrosoftAppSecret)}";
 

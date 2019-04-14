@@ -24,7 +24,7 @@ namespace ShadySoft.Authentication.OAuth
             {
                 var url = "https://graph.facebook.com/v3.2/oauth/access_token";
                 url += $"?client_id={_shadyOptions.FacebookAppId}";
-                url += $"&redirect_uri={_shadyOptions.FacebookCallbackUri}";
+                url += $"&redirect_uri={_shadyOptions.ExternalLoginCallbackUri}";
                 url += $"&client_secret={_shadyOptions.FasebookAppSecret}";
                 url += $"&code={oneTimeCode}";
 

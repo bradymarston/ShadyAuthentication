@@ -22,7 +22,7 @@ namespace ShadySoft.Authentication.OAuth
             {
                 var url = "https://www.googleapis.com/oauth2/v4/token";
                 url += $"?client_id={_shadyOptions.GoogleAppId}";
-                url += $"&redirect_uri={_shadyOptions.GoogleCallbackUri}";
+                url += $"&redirect_uri={_shadyOptions.ExternalLoginCallbackUri}";
                 url += $"&client_secret={_shadyOptions.GoogleAppSecret}";
                 url += $"&code={oneTimeCode}";
                 url += "&grant_type=authorization_code";
