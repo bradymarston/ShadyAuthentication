@@ -2,7 +2,7 @@
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class GoogleUserInfo : IOAuthUserInfo
+    public class GoogleUserInfo : IOAuthUserInfo
     {
         [JsonProperty(PropertyName = "Sub")]
         public string Id { get; set; }

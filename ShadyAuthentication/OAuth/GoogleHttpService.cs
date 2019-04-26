@@ -7,13 +7,20 @@ using System.Threading.Tasks;
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class GoogleHttpService : IOAuthHttpService
+    public class GoogleHttpService : IOAuthHttpService
     {
-        private readonly ShadyAuthenticationOptions _shadyOptions;
+        public string ProviderId { get; } = "Google";
+        public string ProviderDisplayName { get; } = "Google";
 
-        public GoogleHttpService(ShadyAuthenticationOptions shadyOptions)
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+        private readonly string _callbackUri;
+
+        public GoogleHttpService(string clientId, string clientSecret, string callbackUri)
         {
-            _shadyOptions = shadyOptions;
+            _clientId = clientId;
+            _clientSecret = clientSecret;
+            _callbackUri = callbackUri;
         }
 
         public async Task<OAuthAccessToken> GetAccessTokenAsync(string oneTimeCode)
@@ -21,9 +28,9 @@ namespace ShadySoft.Authentication.OAuth
             using (HttpClient client = new HttpClient())
             {
                 var url = "https://www.googleapis.com/oauth2/v4/token";
-                url += $"?client_id={_shadyOptions.GoogleAppId}";
-                url += $"&redirect_uri={_shadyOptions.ExternalLoginCallbackUri}";
-                url += $"&client_secret={_shadyOptions.GoogleAppSecret}";
+                url += $"?client_id={_clientId}";
+                url += $"&redirect_uri={_callbackUri}";
+                url += $"&client_secret={_clientSecret}";
                 url += $"&code={oneTimeCode}";
                 url += "&grant_type=authorization_code";
 

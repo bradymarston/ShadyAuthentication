@@ -2,7 +2,7 @@
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class FacebookUserInfo : IOAuthUserInfo
+    public class FacebookUserInfo : IOAuthUserInfo
     {
         public string Id { get; set; }
         public string Name { get; set; }

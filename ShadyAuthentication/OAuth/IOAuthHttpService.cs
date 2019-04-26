@@ -3,8 +3,10 @@ using ShadySoft.Authentication;
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal interface IOAuthHttpService
+    public interface IOAuthHttpService
     {
+        string ProviderId { get; }
+        string ProviderDisplayName { get; }
         Task<OAuthAccessToken> GetAccessTokenAsync(string oneTimeCode);
         Task<IOAuthUserInfo> GetUserInfoAsync(OAuthAccessToken token);
     }

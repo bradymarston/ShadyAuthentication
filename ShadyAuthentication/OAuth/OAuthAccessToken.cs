@@ -1,7 +1,7 @@
 ﻿
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class OAuthAccessToken
+    public class OAuthAccessToken
     {
         public string AccessToken { get; set; }
         public int ExpiresIn { get; set; }

@@ -9,23 +9,31 @@ using System.Threading.Tasks;
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class FacebookHttpService : IOAuthHttpService
+    public class FacebookHttpService : IOAuthHttpService
     {
-        private readonly ShadyAuthenticationOptions _shadyOptions;
+        public string ProviderId { get; } = "Facebook";
+        public string ProviderDisplayName { get; } = "Facebook";
 
-        public FacebookHttpService(ShadyAuthenticationOptions shadyOptions)
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+        private readonly string _callbackUri;
+
+        public FacebookHttpService(string clientId, string clientSecret, string callbackUri)
         {
-            _shadyOptions = shadyOptions;
+            _clientId = clientId;
+            _clientSecret = clientSecret;
+            _callbackUri = callbackUri;
         }
+
 
         public async Task<OAuthAccessToken> GetAccessTokenAsync(string oneTimeCode)
         {
             using (HttpClient client = new HttpClient())
             {
                 var url = "https://graph.facebook.com/v3.2/oauth/access_token";
-                url += $"?client_id={_shadyOptions.FacebookAppId}";
-                url += $"&redirect_uri={_shadyOptions.ExternalLoginCallbackUri}";
-                url += $"&client_secret={_shadyOptions.FasebookAppSecret}";
+                url += $"?client_id={_clientId}";
+                url += $"&redirect_uri={_callbackUri}";
+                url += $"&client_secret={_clientSecret}";
                 url += $"&code={oneTimeCode}";
 
                 var result = await client.GetAsync(url);

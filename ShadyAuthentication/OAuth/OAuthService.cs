@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -21,20 +22,9 @@ namespace ShadySoft.Authentication.OAuth
         {
             IOAuthHttpService oAuthService;
 
-            switch (provider)
-            {
-                case ExternalLoginProviders.Facebook:
-                    oAuthService = new FacebookHttpService(ShadyOptions);
-                    break;
-                case ExternalLoginProviders.Google:
-                    oAuthService = new GoogleHttpService(ShadyOptions);
-                    break;
-                case ExternalLoginProviders.Microsoft:
-                    oAuthService = new MicrosoftHttpService(ShadyOptions);
-                    break;
-                default:
-                    return null;
-            }
+            oAuthService = ShadyOptions.ExternalLoginProviders.FirstOrDefault(p => p.ProviderId == provider);
+            if (oAuthService == null)
+                return null;
 
             var accessToken = await oAuthService.GetAccessTokenAsync(oneTimeCode);
             if (accessToken == null)
@@ -46,7 +36,7 @@ namespace ShadySoft.Authentication.OAuth
 
             var principal = GeneratePrincipal(userInfo, provider);
 
-            return new ExternalLoginInfo(principal, provider, userInfo.Id, ExternalLoginProviders.DisplayName(provider))
+            return new ExternalLoginInfo(principal, provider, userInfo.Id, oAuthService.ProviderDisplayName)
             {
                 AuthenticationTokens = GenerateAuthenticationTokens(accessToken)
             };

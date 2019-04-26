@@ -9,13 +9,20 @@ using System.Web;
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class MicrosoftHttpService : IOAuthHttpService
+    public class MicrosoftHttpService : IOAuthHttpService
     {
-        private readonly ShadyAuthenticationOptions _shadyOptions;
+        public string ProviderId { get; } = "Microsoft";
+        public string ProviderDisplayName { get; } = "Microsoft";
 
-        public MicrosoftHttpService(ShadyAuthenticationOptions shadyOptions)
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+        private readonly string _callbackUri;
+
+        public MicrosoftHttpService(string clientId, string clientSecret, string callbackUri)
         {
-            _shadyOptions = shadyOptions;
+            _clientId = clientId;
+            _clientSecret = clientSecret;
+            _callbackUri = callbackUri;
         }
 
         public async Task<OAuthAccessToken> GetAccessTokenAsync(string oneTimeCode)
@@ -24,13 +31,12 @@ namespace ShadySoft.Authentication.OAuth
             {
                 var url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
 
-                var bodyString = $"client_id={_shadyOptions.MicrosoftAppId}";
+                var bodyString = $"client_id={_clientId}";
                 bodyString += $"&scope=https%3A%2F%2Fgraph.microsoft.com%2Fuser.read";
                 bodyString += $"&code={oneTimeCode}";
-                bodyString += $"&redirect_uri={HttpUtility.UrlEncode(_shadyOptions.ExternalLoginCallbackUri)}";
+                bodyString += $"&redirect_uri={HttpUtility.UrlEncode(_callbackUri)}";
                 bodyString += "&grant_type=authorization_code";
-                bodyString += $"&client_secret={HttpUtility.UrlEncode(_shadyOptions.MicrosoftAppSecret)}";
-
+                bodyString += $"&client_secret={HttpUtility.UrlEncode(_clientSecret)}";
 
                 var requestContent = new StringContent(bodyString);
 

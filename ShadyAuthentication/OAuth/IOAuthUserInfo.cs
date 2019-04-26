@@ -1,7 +1,7 @@
 ﻿
 namespace ShadySoft.Authentication.OAuth
 {
-    internal interface IOAuthUserInfo
+    public interface IOAuthUserInfo
     {
         string Id { get; }
         string Name { get; }

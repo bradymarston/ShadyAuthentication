@@ -2,7 +2,7 @@
 
 namespace ShadySoft.Authentication.OAuth
 {
-    internal class MicrosoftUserInfo : IOAuthUserInfo
+    public class MicrosoftUserInfo : IOAuthUserInfo
     {
         public string Id { get; set; }
         [JsonProperty(PropertyName = "DisplayName")]
